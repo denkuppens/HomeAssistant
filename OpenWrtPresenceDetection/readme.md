@@ -2,15 +2,18 @@
 
 This is a solution to track WIFI devices in a home using one or more OpenWrt WIFI access points in combination with Home Assistant.
 
-Read this before reading the whole story:
-
-It might not be useable in your situation because you need:
+Read this before reading the whole story because it might not be useable in your situation because you need:
 - One or more router and accesspoints flashed with OpenWrt firmware (openwrt.org)
 - Home Assistant (https://www.home-assistant.io/)
 - MQTT server that is connected to Home Assistant
 - Optional: WIFI Fast roaming enabled on all OpenWrt APs
 - Optional: IOT devices, MQTT server and Home Assistant running in a protected VLAN which can't access the router
 - To know how to create scripts and automations in Home Assistant 
+
+
+
+
+Still here? 
 
 # Why did I create this?
 
