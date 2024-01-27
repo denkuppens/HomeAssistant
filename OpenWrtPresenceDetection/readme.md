@@ -44,14 +44,14 @@ Then change the automation to your MAC addresses and input_text helpers.
 ### The order of MAC addresses need to match the order of the input_text helpers!!!!
 
 - Screenshot of the automation:
-[![Screenshot of the automation] (https://github.com/denkuppens/HomeAssistent/blob/b0178c22920b4cd0881686115f5e24283eeca65d/OpenWrtPresenceDetection/Automation_screenshot.jpg)]
+[![Screenshot of the automation] (https://raw.githubusercontent.com/denkuppens/HomeAssistent/OpenWrtPresenceDetection/Automation_screenshot.jpg)]
 
 - Screenshot of the input_text entities:
 [![Screenshot of the input_text entities]
-(https://github.com/denkuppens/HomeAssistent/blob/b0178c22920b4cd0881686115f5e24283eeca65d/OpenWrtPresenceDetection/HomeAssistant_screenshot.jpg)]
+(https://raw.githubusercontent.com/denkuppens/HomeAssistent/OpenWrtPresenceDetection/HomeAssistant_screenshot.jpg)]
 
 - Screenshot of the input_text history:
-[![Screenshot of the input_text history entities] (https://github.com/denkuppens/HomeAssistent/blob/b0178c22920b4cd0881686115f5e24283eeca65d/OpenWrtPresenceDetection/HomeAssistant_history_screenshot.jpg)]
+[![Screenshot of the input_text history entities] (https://raw.githubusercontent.com/denkuppens/HomeAssistent/OpenWrtPresenceDetection/HomeAssistant_history_screenshot.jpg)]
 
 #Credits
 -------
