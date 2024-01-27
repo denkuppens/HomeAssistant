@@ -1,3 +1,3 @@
 # My HomeAssistant projects:
 
-- [OpenWrt Presence Detection Project](./OpenWrtPresenceDetection/readme.md)
+- [OpenWrt Presence Detection Project](./OpenWrtPresenceDetection)
