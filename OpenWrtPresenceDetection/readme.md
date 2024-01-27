@@ -1,3 +1,5 @@
+#What is this?
+
 This is a solution to track WIFI devices in a home using one or more OpenWrt WIFI access points in combination with Home Assistant.
 
 Note: It might not be useable in your situation because you need:
@@ -9,13 +11,11 @@ Note: It might not be useable in your situation because you need:
 - To know how to create scripts and automations in Home Assistant 
 
 #Why did I create this?
-----------------------
 
 I was looking for a way to determine if my family members are home. There are a few very nice solutions out there but as far as I could tell they need direct access to the network router. I don't have that because I have all IOT devices connected to a VLAN which can't access the OpenWrt settings and I did not want to open a port for security reasons. 
 Then I found the excellent work of Simon Christmann and Alexander Nagy on github providing a solution to publish network events to a MQTT server. The router and APs can connect to the VLAN so this was the first part of the solution. The other part was to make the presence visible in Home Assistant and to create automations based on the data. This is done via the HA automations and scripting functionality.
 
 #How does it work?
------------------
 
 Each OpenWrt AP/router runs a program which publishes (dis)connects to a central MQTT server. In my case the MQTT server is running on the same computer as Home Assistant.
 Next, Home Assistant has an automation that triggers when the MQTT message is received and calls the script that I provide here. The script analyses the MQTT message and the script updates the text of a specific input_text helper. 
@@ -23,7 +23,6 @@ We have an access point on every level of our house. This setup shows what mobil
 The reaction time of the detection is remarkably fast. Perhaps this is because I have setup the AP's in 'Fast roaming' mode. There is an excellent video tutorial how to do this: https://www.youtube.com/watch?v=kMgs2XFClaM
 
 #Installation
-------------
 
 Install presence_report on each OpenWrt AP/router in your home following this GitHub repository:
 https://github.com/enesbcs/owrtwifi2mqtt
@@ -44,14 +43,14 @@ Name the automation 'Show to what wifi access pionts devices are connected'
 Then change the automation to your MAC addresses and input_text helpers. 
 ### The order of MAC addresses need to match the order of the input_text helpers!!!!
 
-Screenshot of the automation:
-[![Screenshot of the automation (https://github.com/denkuppens/HomeAssistent/tree/main/OpenWrtPresenceDetection/Automation_screenshot.jpg)]
+- Screenshot of the automation:
+[![Screenshot of the automation] (https://github.com/denkuppens/HomeAssistent/tree/main/OpenWrtPresenceDetection/Automation_screenshot.jpg)]
 
-Screenshot of the input_text entities:
-[![Screenshot of the input_text entities (https://github.com/denkuppens/HomeAssistent/tree/main/OpenWrtPresenceDetection/HomeAssistant_screenshot.jpg)]
+- Screenshot of the input_text entities:
+[![Screenshot of the input_text entities] (https://github.com/denkuppens/HomeAssistent/tree/main/OpenWrtPresenceDetection/HomeAssistant_screenshot.jpg)]
 
-Screenshot of the input_text history:
-[![Screenshot of the input_text history entities (https://github.com/denkuppens/HomeAssistent/tree/main/OpenWrtPresenceDetection/HomeAssistant_history_screenshot.jpg)]
+- Screenshot of the input_text history:
+[![Screenshot of the input_text history entities] (https://github.com/denkuppens/HomeAssistent/tree/main/OpenWrtPresenceDetection/HomeAssistant_history_screenshot.jpg)]
 
 #Credits
 -------
