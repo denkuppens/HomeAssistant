@@ -2,7 +2,9 @@
 
 This is a solution to track WIFI devices in a home using one or more OpenWrt WIFI access points in combination with Home Assistant.
 
-Note: It might not be useable in your situation because you need:
+Read this before reading the whole story:
+
+It might not be useable in your situation because you need:
 - One or more router and accesspoints flashed with OpenWrt firmware (openwrt.org)
 - Home Assistant (https://www.home-assistant.io/)
 - MQTT server that is connected to Home Assistant
@@ -24,36 +26,41 @@ The reaction time of the detection is remarkably fast. Perhaps this is because I
 
 # Installation
 
-Install presence_report on each OpenWrt AP/router in your home following this GitHub repository:
+- Install presence_report on each OpenWrt AP/router in your home following this GitHub repository:
 https://github.com/enesbcs/owrtwifi2mqtt
 This is the most work if you have many APs.
 
-In Home Assistant create a new script and copy-paste the contents of Script_To_what_wifi_access_point_is_a_device_connected.yaml to the script in 'Edit in yaml' mode. This can be done by clicking the three dots in the upper right corner of Home Assistant.
+- In Home Assistant create a new script and copy-paste the contents of Script_To_what_wifi_access_point_is_a_device_connected.yaml to the script in 'Edit in yaml' mode. This can be done by clicking the three dots in the upper right corner of Home Assistant.
 Name the script "To what wifi access point is a device connected?". 
 Save the script.
 
-Create 'input text' helpers for every device/person you want to track in the house. Do this in Home Assistant via Settings->Devices->Helpers->Create Helper. Select 'Text' in the dialog that pops up. 
+- Create 'input text' helpers for every device/person you want to track in the house. Do this in Home Assistant via Settings->Devices->Helpers->Create Helper. Select 'Text' in the dialog that pops up. 
 Name the helper like 'Where is xxxxx in the house?'. Replace 'xxxxx' with the name of the person.
 
-Find the MAC addresses of the devices you want to track. I got them via the OpenWrt router main interface: http://192.168.1.1
+- Find the MAC addresses of the devices you want to track. I got them via the OpenWrt router main interface: http://192.168.1.1
 
-Note: convert the MAC addresses to lower case and change the ':' sign to '-'. So AA:BB:CC:DD:EE:FF becomes aa-bb-cc-dd-ee-ff.
+- Note: convert the MAC addresses to lower case and change the ':' sign to '-'. So AA:BB:CC:DD:EE:FF becomes aa-bb-cc-dd-ee-ff.
 
-Copy-paste the contents of Automation_Show_where_devices_are_in_the_house.yaml to the automation in 'Edit in yaml' mode. 
+- Copy-paste the contents of Automation_Show_where_devices_are_in_the_house.yaml to the automation in 'Edit in yaml' mode. 
 Name the automation 'Show to what wifi access pionts devices are connected'
 Then change the automation to your MAC addresses and input_text helpers. 
+
 ### The order of MAC addresses need to match the order of the input_text helpers!!!!
+
 
 # Screenshots
 
 - Screenshot of the automation:
-![Screenshot of the automation] (./Automation_screenshot.jpg?raw=true)
+
+![Screenshot of the automation](./Automation_screenshot.jpg?raw=true)
 
 - Screenshot of the input_text entities:
+
 ![Screenshot of the input_text entities](./HomeAssistant_screenshot.jpg?raw=true)
 
 - Screenshot of the input_text history:
-![Screenshot of the input_text history entities] (./HomeAssistant_history_screenshot.jpg?raw=true)
+
+![Screenshot of the input_text history entities](./HomeAssistant_history_screenshot.jpg?raw=true)
 
 
 # Credits
