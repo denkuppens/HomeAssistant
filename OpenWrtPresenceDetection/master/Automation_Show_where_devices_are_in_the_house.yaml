@@ -1,0 +1,23 @@
+alias: Show to what wifi access pionts devices are connected
+description: ""
+trigger:
+  - platform: mqtt
+    topic: openwrt/#
+condition: []
+action:
+  - service: script.to_what_wifi_access_point_is_a_device_connected
+    data:
+      MAC_addresses:
+        - bc-ff-a4-42-3f-77
+        - 1c-ff-d6-22-d2-f2
+        - 4c-ff-db-34-0c-cd
+        - 9e-ff-89-23-c6-73
+      targets:
+        entity_id:
+          - input_text.where_is_a_in_the_house
+          - input_text.where_is_b_in_the_house
+          - input_text.where_is_c_in_the_house
+          - input_text.where_is_d_in_the_house
+      MQTT_topic: "{{trigger.topic}}"
+      MQTT_payload: "{{trigger.payload}}"
+mode: single

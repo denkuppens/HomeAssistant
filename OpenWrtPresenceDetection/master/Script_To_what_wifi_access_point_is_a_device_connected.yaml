@@ -1,0 +1,73 @@
+alias: " To what wifi access point is a device connected?"
+description: >-
+  Pass the trigger.payload and trigger.topic as data to the script as MQTT_topic
+  and MQTT_payload
+fields:
+  MAC_addresses:
+    required: true
+    description: MAC addresses
+    example: 50-ff-71-38-cc-4c
+    selector:
+      text:
+        multiple: true
+  MQTT_topic:
+    required: true
+    description: The MQTT topic trigger.topic
+    example: openwrt/Workshop/50-eb-71-28-cc-4c/iwevent
+    default: "{{trigger.topic}}"
+    selector:
+      template: null
+  MQTT_payload:
+    required: true
+    description: the MQTT payload trigger.payload
+    example: "{\"state\": \"Online\", \"name\": \"\" }"
+    default: "{{trigger.payload}}"
+    selector:
+      template: null
+  targets:
+    required: true
+    description: text input helpers
+    example: input_text.where_am_i_in_the_house
+    selector:
+      target: null
+variables:
+  new_AP_name: "{{MQTT_topic.split('/')[1]}}"
+sequence:
+  - service: persistent_notification.create
+    data:
+      message: "topic: {{ MQTT_topic }} payload: {{ MQTT_payload }}"
+      title: Custom subject
+    enabled: false
+  - repeat:
+      for_each: "{{MAC_addresses}}"
+      sequence:
+        - if:
+            - alias: check for the MAC address in the topic
+              condition: template
+              value_template: |-
+                {% if repeat.item in MQTT_topic %} 
+                  true 
+                {%else%} 
+                  false 
+                {% endif %}
+          then:
+            - service: input_text.set_value
+              metadata: {}
+              data:
+                value: >-
+                  {% if "Online" in MQTT_payload.state %} 
+                    {{new_AP_name}}
+                  {% elif states(targets.entity_id[repeat.index-1]) in
+                  new_AP_name %}
+                    Unknown
+                  {% else%}
+                    {{states(targets.entity_id[repeat.index-1])}}
+                  {% endif %}                
+              target:
+                entity_id: "{{targets.entity_id[repeat.index-1]}}"
+            - service: persistent_notification.create
+              data:
+                message: "Debug: {{states(targets.entity_id[repeat.index-1])}} "
+                title: Custom subject
+              enabled: false
+mode: single
