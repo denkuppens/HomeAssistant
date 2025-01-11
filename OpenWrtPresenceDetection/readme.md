@@ -29,9 +29,33 @@ The reaction time of the detection is remarkably fast. Perhaps this is because I
 
 # Installation
 
-- Install presence_report on each OpenWrt AP/router in your home following this GitHub repository:
-https://github.com/enesbcs/owrtwifi2mqtt
-This is the most work if you have many APs.
+Install the MQTT client on your OpenWrt router and APs
+
+Install the packages with either luci or opkg.
+
+- `mosquitto-client`
+- `coreutils-nohup`
+
+Install presence_report on each OpenWrt AP/router in your home by executing this command on your AP/router via an ssh terminal. For example in Windows open a cmd promt and type "ssh root@192.168.1.1". Do this vor every Router/AP in your network. 
+
+    wget -O /usr/bin/presence_report https://github.com/denkuppens/HomeAssistant/blob/main/OpenWrtPresenceDetection/presence_report?raw=true && chmod u+x /usr/bin/presence_report
+
+> (Script is modified from original GitHub repository: https://github.com/enesbcs/owrtwifi2mqtt, I added the ip address to the report message)
+
+# Usage
+
+After installation the following topics will be published for each WiFi device, using the _lowercase_ MAC address:
+
+    openwrt/HOSTNAME/00-00-00-00-00-00/iwevent
+	
+Messege will be a JSON with "state" : Online/Offline,  "name" with DNSName of the device and the IP address like this:
+```
+{
+  "state": "Offline",
+  "name": "IAMTEDEVICE",
+  "ip": "192.168.0.123"
+}
+```
 
 - In Home Assistant create a new script and copy-paste the contents of Script_To_what_wifi_access_point_is_a_device_connected.yaml to the script in 'Edit in yaml' mode. This can be done by clicking the three dots in the upper right corner of Home Assistant.
 Name the script "To what wifi access point is a device connected?". 
