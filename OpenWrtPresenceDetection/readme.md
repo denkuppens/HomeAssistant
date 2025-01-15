@@ -36,9 +36,26 @@ Install the packages with either luci or opkg.
 - `mosquitto-client`
 - `coreutils-nohup`
 
+Use these commands via SSH (replace ip adddress with ip address of your router): 
+
+      ssh root@192.168.1.1 
+      opkg update
+      opkg install mosquitto-client
+      opkg install coreutils-nohup
+      
+I personally also like to install htop to see if the process is running. 
+
 Install presence_report on each OpenWrt AP/router in your home by executing this command on your AP/router via an ssh terminal. For example in Windows open a cmd promt and type "ssh root@192.168.1.1". Do this vor every Router/AP in your network. 
 
     wget -O /usr/bin/presence_report https://github.com/denkuppens/HomeAssistant/blob/main/OpenWrtPresenceDetection/presence_report?raw=true && chmod u+x /usr/bin/presence_report
+
+Start the script via the SSH terminal (replace the ip address with the address of your MQTT server)
+
+    nohup /usr/bin/presence_report 192.168.1.x >/dev/null 2>&1 &
+
+Add this also to rc.local directly or via the OpenWrt user interface -> System -> Startup -> Local startup. Add it just above 'exit 0'.
+                
+    nohup /usr/bin/presence_report 192.168.1.x >/dev/null 2>&1 &
 
 > (Script is modified from original GitHub repository: https://github.com/enesbcs/owrtwifi2mqtt, I added the ip address to the report message)
 
