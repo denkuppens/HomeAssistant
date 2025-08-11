@@ -96,7 +96,10 @@ Name the automation 'Show to what wifi access pionts devices are connected'
 Then change the automation to your MAC addresses and input_text helpers. 
 
 > [!IMPORTANT]
-> The order of MAC addresses need to match the order of the input_text helpers!!!!
+> The order of MAC addresses need to match the order of the input_text helpers.
+
+> [!IMPORTANT]
+> Some Android phones randomize the phone MAC address. Turn this off in the wifi settings of the WIFI network of your home. In my Xiaomi phone it's under Wi-Fi -> the home wifi network settings -> Privacy -> Set to "Use device MAC".
 
 
 # Screenshots
