@@ -36,12 +36,15 @@ Install the packages with either luci or opkg.
 - `mosquitto-client`
 - `coreutils-nohup`
 
+First login to the OpenWRT device. For example:
+
+	ssh root@192.168.1.1
+
 Use these commands via SSH (replace ip adddress with ip address of your router): 
 
-      ssh root@192.168.1.1 
-      opkg update
-      opkg install mosquitto-client
-      opkg install coreutils-nohup
+	opkg update
+    opkg install mosquitto-client
+	opkg install coreutils-nohup
       
 I personally also like to install htop to see if the process is running. 
 
