@@ -14,6 +14,10 @@ sensors and controls in Home Assistant as shown in the screenshot above.
 EspHome, Home Assistant should be installed and operaional first. 
 Program an ESP32 with the YAML file in this repository, connect the controller to the RS485 adapter and that one to the VASCO modubus connector. 
 
+# Special feature
+
+You can turn the unit off via Home Assistant which is usually not allowed. It is NOT advised to turn the unit off. USE AT YOUR OWN RISK!
+
 # D150 Modbus documentation
 
 ![Modbus datasheet](./90.01.06.53-Handleiding-Modbus-registers-SAB-RVU-1.pdf)
