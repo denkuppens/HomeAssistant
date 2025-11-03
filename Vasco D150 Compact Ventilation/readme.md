@@ -15,4 +15,4 @@ Program an ESP32 with the YAML file in this repository, connect the controller t
 
 # D150 Modbus documentation
 
-![Modbus datasheet](./90.01.06.53-Handleiding-Modbus-registers-SAB-RVU-1.pdf?raw=true)
+![Modbus datasheet](./90.01.06.53-Handleiding-Modbus-registers-SAB-RVU-1.pdf)
