@@ -2,7 +2,7 @@
 
 **This is an EspHome based modbus controller to integrate the Vasco D150 ventilation unit into Home Assistant.**
 
-![Screenshot of the controller in Home Assistant](./HASS_EspHomeVascoD150.png?raw=true)
+![Screenshot of the controller in Home Assistant](./HASS_EspHomeVascoD150.png)
 
 # How does it work?
 
@@ -14,9 +14,9 @@ sensors and controls in Home Assistant as shown in the screenshot above.
 EspHome, Home Assistant should be installed and operational first. 
 Program an ESP32 with the YAML file in this repository, connect the controller to the RS485 adapter and that one to the VASCO modubus connector. 
 
-![Used RS485 adapter](./rs485module.png?raw=true)
+![Used RS485 adapter](./rs485module.png)
 
-![VASCO PCB](./VascoPCB.jpg?raw=true) { width: 200px; }
+![VASCO PCB](./VascoPCB.jpg) {width=50%}
 
 
 # Special feature
