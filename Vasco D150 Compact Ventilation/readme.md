@@ -6,17 +6,22 @@
 
 # How does it work?
 
-It uses an ESP32 micro controller and an RS485 adapter which is connected to the VASCO D150 controller. The ESP32 runs an EspHome program that converts the MODBUS registers to 
+It uses an ESP32 micro controller and a TTL To RS485 Module which is connected to the VASCO D150 controller. The ESP32 runs an EspHome program that converts the MODBUS registers to 
 sensors and controls in Home Assistant as shown in the screenshot above.
 
 # Installation
 
-EspHome, Home Assistant should be installed and operaional first. 
+EspHome, Home Assistant should be installed and operational first. 
 Program an ESP32 with the YAML file in this repository, connect the controller to the RS485 adapter and that one to the VASCO modubus connector. 
+
+![Used RS485 adapter](./rs485module.png?raw=true)
+
+![VASCO PCB](./VascoPCB.jpg?raw=true) { width: 200px; }
+
 
 # Special feature
 
-You can turn the unit off via Home Assistant which is usually not allowed. It is NOT advised to turn the unit off. USE AT YOUR OWN RISK!
+You can turn the unit off via Home Assistant which is usually not allowed. However it is NOT advised to turn the unit off. USE AT YOUR OWN RISK!
 
 # D150 Modbus documentation
 
