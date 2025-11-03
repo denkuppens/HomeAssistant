@@ -6,7 +6,8 @@
 
 # How does it work?
 
-It uses an ESP32 micro controller and an RS485 adapter which is connected to the VASCO D150 controller. The ESP32 runs an EspHome program that converts the MODBUS registers to sensors and controls. 
+It uses an ESP32 micro controller and an RS485 adapter which is connected to the VASCO D150 controller. The ESP32 runs an EspHome program that converts the MODBUS registers to 
+sensors and controls in Home Assistant as shown in the screenshot above.
 
 # Installation
 
