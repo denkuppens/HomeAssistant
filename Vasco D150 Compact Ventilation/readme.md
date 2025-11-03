@@ -14,10 +14,10 @@ sensors and controls in Home Assistant as shown in the screenshot above.
 EspHome, Home Assistant should be installed and operational first. 
 Program an ESP32 with the YAML file in this repository, connect the controller to the RS485 adapter and that one to the VASCO modubus connector. 
 
-Modbus module from AliExpress:
+Modbus module from AliExpress:<br>
 <img src="./rs485module.png" width="50%">
 
-D150 PCB with Modbus connector on the right:
+D150 PCB with Modbus connector on the right:<br>
 <img src="./VascoPCB.jpg" width="50%">
 
 
