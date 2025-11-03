@@ -1,0 +1,535 @@
+esphome:
+  name: vasco-ventilation-unit
+  friendly_name: VASCO Ventilation Unit
+
+esp32:
+  board: seeed_xiao_esp32c3
+  framework:
+    type: arduino
+
+# Enable logging
+logger:
+
+# Enable Home Assistant API
+api:
+
+ota:
+  - platform: esphome
+
+wifi:
+  ssid: !secret wifi_ssid
+  password: !secret wifi_password
+
+  # Enable fallback hotspot (captive portal) in case wifi connection fails
+  ap:
+    ssid: "Vasco-Ventilation-Unit"
+    password: "vasco-ventilation"
+
+captive_portal:
+
+uart:
+  id: mod_bus
+  tx_pin: GPIO1
+  rx_pin: GPIO2
+  baud_rate: 9600
+  stop_bits: 1
+  debug:
+
+modbus:
+#  flow_control_pin: GPIOXX #<--- adapt!
+  id: modbus1
+  send_wait_time: 500ms
+  
+modbus_controller:
+  - id: modbus_device
+    address: 0x01   ## address of the Modbus slave device on the bus
+    modbus_id: modbus1
+    setup_priority: -10
+  
+switch:
+# Blocked functions
+# Bit fileds (1 Active, 0 not Active)
+# b0:Manual mode not allowed
+# b1:Party mode not allowed
+# b2: Holiday mode not allowed
+# b3:Auto mode not allowed
+# b4: Weekly Prog mode not allowed
+# b5: Time/day change not allowed
+# b6: Off command not allowed
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Power Off not allowed"
+    address: 0x0226
+    register_type: holding
+    bitmask: 0x40
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Power"
+    address: 0x0300
+    register_type: holding
+    bitmask: 0x01
+
+# Bit field:0 Off, 1 On
+# b0: Free
+# b1: Stop Mode (0 FanOff, 1 FanOn)
+# b2: Flush mode (0 Off, 1 On)
+# b3:MB Uart speed
+# • 0: 9600 bps
+# • 1:38400 bps
+# b4: Hi RH management (0:Off, 1:On)
+# b5-15: Free
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Stop mode"
+    address: 0x0200
+    register_type: holding
+    bitmask: 0x02
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Flush mode"
+    address: 0x0200
+    register_type: holding
+    bitmask: 0x04
+
+
+binary_sensor:
+
+  # Machine state
+  # Bit fields
+  # b0: 1: Remote OFF active
+  # b1: 1: Bypass active
+  # b2: 1: Electric Pre Heater active
+  # b3: 1: Water pre-heating active
+  # b4: 1: Boost active
+  # b5: 1: Defrost cycle active
+  # b6: reserved
+  # b7: 1: Party Mode ON
+  # b8: 1 On, 0 Off
+  # b9-10: Mode
+  # • 0:Holiday
+  # • 1:Auto
+  # • 2:Program
+  # • 3:Manual
+  # b11: Season
+  # • 0:Summer
+  # • 1:Winter
+  # B12-15: Program selection 
+  # • 0-3 Preset progrmas (P1-P4)
+  # • 4-7 User progrmas (P5-P8)
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "State Bypass Active"
+    address: 0x0105
+    register_type: holding
+    bitmask: 0x02
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "State Defrost cycle Active"
+    address: 0x0105
+    register_type: holding
+    bitmask: 0x020    
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "State Winter"
+    address: 0x0105
+    register_type: holding
+    bitmask: 0x800
+
+  # Alarms
+  # Bit fileds (1 Active, 0 not Active)
+  # b0: T1 probe failure,
+  # b1: T2 probe failure,
+  # b2: T3 probe failure,
+  # b3: T4 probe failure,
+  # b4: Timekeeper failure,
+  # b5: Frost alarm
+  # b6: Frost alarm (from T2 probe)
+  # b7: Fireplace Alarm
+  # b8: Pressure transducer failure
+  # b9: Filter alarm
+  # b10: Fans failure
+  # b11: RH or CO2 sensor failure
+  # b12: Fan thermic input alarm
+  # b13: not used
+  # b14: Pre Heating alarm
+  # b15:Pre frost alarm (T2)
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Alarm Timekeeper failure"
+    device_class: problem
+    address: 0x0110
+    register_type: holding
+    bitmask: 0x10
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Alarm Frost detected"
+    device_class: problem
+    address: 0x0110
+    register_type: holding
+    bitmask: 0x20
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Alarm Frost detected at fresh air outlet"
+    device_class: problem
+    address: 0x0110
+    register_type: holding
+    bitmask: 0x40
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Alarm Fans failure"
+    device_class: problem
+    address: 0x0110
+    register_type: holding
+    bitmask: 0x400
+
+
+
+
+# 0x0111F Uns16 R 2 Options/info
+# b0: -
+# b1: 1: RPM too high detected
+# b8: 1: IAQ Used
+# b9: 1: Post treatment used
+# b10: 1: HE used
+# b11: 1: Boiler boost mode used
+# b12: 1: CO2 sensor present
+# b13: 1: Differential pressure sensor present
+# b14: 1: RH sensor present
+# b15: 1: Reverse mounting
+  # - platform: modbus_controller
+  #   modbus_controller_id: modbus_device
+  #   name: "RPM too high detected"
+  #   address: 0x0111F
+  #   register_type: holding
+  #   bitmask: 0x2
+  # - platform: modbus_controller
+  #   modbus_controller_id: modbus_device
+  #   name: "IAQ Used"
+  #   address: 0x111F
+  #   register_type: holding
+  #   bitmask: 0x100
+  # - platform: modbus_controller
+  #   modbus_controller_id: modbus_device
+  #   name: "Post treatment used"
+  #   address: 0x0111F
+  #   register_type: holding
+  #   bitmask: 0x200
+  # - platform: modbus_controller
+  #   modbus_controller_id: modbus_device
+  #   name: "HE used"
+  #   address: 0x111F
+  #   register_type: holding
+  #   bitmask: 0x400
+  # - platform: modbus_controller
+  #   modbus_controller_id: modbus_device
+  #   name: "Boiler boost mode used"
+  #   address: 0x0111F
+  #   register_type: holding
+  #   bitmask: 0x800
+  # - platform: modbus_controller
+  #   modbus_controller_id: modbus_device
+  #   name: "CO2 sensor present"
+  #   address: 0x0111F
+  #   register_type: holding
+  #   bitmask: 0x1000
+  # - platform: modbus_controller
+  #   modbus_controller_id: modbus_device
+  #   name: "Differential pressure sensor present"
+  #   address: 0x0111F
+  #   register_type: holding
+  #   bitmask: 0x2000
+  # - platform: modbus_controller
+  #   modbus_controller_id: modbus_device
+  #   name: "RH sensor present"
+  #   address: 0x0111F
+  #   register_type: holding
+  #   bitmask: 0x4000
+  # - platform: modbus_controller
+  #   modbus_controller_id: modbus_device
+  #   name: "Reverse mounting"
+  #   address: 0x0111F
+  #   register_type: holding
+  #   bitmask: 0x8000
+
+  #0x0122 Uns16 R 2 FreeCooling/FreeHeating 0: No Free Cooling/Heating 1: Free Cooling 2: Free Heating
+  # - platform: modbus_controller
+  #   modbus_controller_id: modbus_device
+  #   name: "No Free Cooling/Heating"
+  #   address: 0x0122
+  #   register_type: holding
+  #   bitmask: 0x01
+  # - platform: modbus_controller
+  #   modbus_controller_id: modbus_device
+  #   name: "Free Cooling"
+  #   address: 0x0122
+  #   register_type: holding
+  #   bitmask: 0x02
+  # - platform: modbus_controller
+  #   modbus_controller_id: modbus_device
+  #   name: "Free Heating"
+  #   address: 0x0122
+  #   register_type: holding
+  #   bitmask: 0x04
+
+sensor:
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Temperature fresh air inlet"
+    unit_of_measurement: "°C"
+    address: 0x0100
+    register_type: holding
+    value_type: S_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Temperature fresh air outlet"
+    unit_of_measurement: "°C"
+    address: 0x0101
+    register_type: holding
+    value_type: S_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Temperature inside air inlet"
+    unit_of_measurement: "°C"
+    address: 0x0102
+    register_type: holding
+    value_type: S_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Temperature inside air outlet"
+    unit_of_measurement: "°C"
+    address: 0x0103
+    register_type: holding
+    value_type: S_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1            
+
+
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Humidity setpoint"
+    unit_of_measurement: "%"
+    address: 0x0106
+    register_type: holding
+    value_type: S_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1            
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Filters operation time"
+    unit_of_measurement: "H"
+    address: 0x0107
+    register_type: holding
+    value_type: U_WORD
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.25
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Fan 1 speed"
+    unit_of_measurement: "RPM"
+    address: 0x010B
+    register_type: holding
+    value_type: U_WORD
+    
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Fan 2 speed"
+    unit_of_measurement: "RPM"
+    value_type: U_WORD
+    address: 0x010C
+    register_type: holding
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Duty Cycle Fan 1"
+    unit_of_measurement: "%"
+    address: 0x010D
+    register_type: holding
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1   
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Duty Cycle Fan 2"
+    unit_of_measurement: "%"
+    address: 0x010E
+    register_type: holding
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1  
+
+  # - platform: modbus_controller # not installed D150
+  #   modbus_controller_id: modbus_device
+  #   name: "Diff Pressure Sensor 1"
+  #   unit_of_measurement: "Pascal"
+  #   address: 0x0111
+  #   register_type: holding
+  #   value_type: S_WORD
+  #   accuracy_decimals: 1
+  #   filters:
+  #     - multiply: 0.1 
+
+  # - platform: modbus_controller # not installed D150
+  #   modbus_controller_id: modbus_device
+  #   name: "Diff Pressure Sensor 2"
+  #   unit_of_measurement: "Pascal"
+  #   address: 0x0112
+  #   register_type: holding
+  #   value_type: S_WORD
+  #   accuracy_decimals: 1
+  #   filters:
+  #     - multiply: 0.1 
+
+  # - platform: modbus_controller # Not installed
+  #   modbus_controller_id: modbus_device
+  #   name: "CO2"
+  #   unit_of_measurement: "PPM"
+  #   value_type: U_WORD
+  #   address: 0x0113
+  #   register_type: holding
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Humidity"
+    unit_of_measurement: "%"
+    value_type: U_WORD
+    address: 0x0114
+    register_type: holding
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Hours of operation"
+    unit_of_measurement: "H"
+    value_type: U_DWORD
+    address: 0x0120
+    register_type: holding
+    accuracy_decimals: 0
+    filters:
+      - multiply: 1.0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Temp for free cooling"
+    unit_of_measurement: "°C"
+    address: 0x021b
+    register_type: holding
+    value_type: S_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Temp for free heating"
+    unit_of_measurement: "°C"
+    address: 0x021c
+    register_type: holding
+    value_type: S_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+# 0x021D Sig16 RW 2 Fan2 unbalance % (-20...+20)
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Fan 2 unbalance value"
+    unit_of_measurement: "%"
+    address: 0x021D
+    register_type: holding
+    value_type: S_WORD
+
+  - platform: wifi_signal
+    name: "WiFi Signal"
+    update_interval: 120s
+
+  - platform: internal_temperature
+    name: "ESP temperature"    
+
+# ######################################################################################
+
+
+select:
+# Mode Selection 0x0307 Uns16 RW 2
+# (single register)
+# • 0:Holiday
+# • 1:Auto
+# • 2:Program
+# • 3:Manual
+# • 4:Party
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Mode Selection"
+    address: 0x0307
+    value_type: U_WORD
+    optionsmap:
+      "Holiday": 0
+      "Auto": 1
+      "Program": 2
+      "Manual": 3
+      "Party": 4
+
+# 0-3 (Speed 1- Speed 4)
+# Note: Writing this register triggers the
+# manual speed mode
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Manual Speed"
+    address: 0x0212
+    value_type: S_WORD
+    optionsmap:
+      "Speed 1": 0
+      "Speed 2": 1
+      "Speed 3": 2
+      "Speed 4": 3
+
+# 0x021D Sig16 RW 2 Fan2 unbalance % (-20...+20)
+  - platform: modbus_controller
+    modbus_controller_id: modbus_device
+    name: "Fan 2 unbalance"
+    address: 0x021D
+    value_type: S_WORD
+    optionsmap:
+      "-20%": -20
+      "-10%": -10
+      "  0%": 0
+      "+10%": 10
+      "+20%": 20
+
+output:
+# # 0x0310 Uns16 RW 2 Reset Filter Counter Writing 1 resets the filter counter
+#   - platform: modbus_controller
+#     modbus_controller_id: modbus_device
+#     name: "Reset Filter Counter, write 1"
+#     address: 0x0310
+#     value_type: U_WORD
+#     multiply: 1.0
+
+
+
+    
